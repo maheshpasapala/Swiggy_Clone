@@ -9,10 +9,34 @@ import Discount from "../Assets/discount.svg";
 import CloseIcon from "@mui/icons-material/Close";
 import { Drawer, Box } from "@mui/material";
 import { Navbar } from "./Navbar";
-import ScrollToTop from "react-scroll-to-top";
-import { useWindowScroll } from "react-use";
 import { useNavigate } from "react-router-dom";
 import { PreLoader } from "../PreLoader";
+
+const ScrollToTopButton = () => (
+  <button
+    type="button"
+    aria-label="Scroll to top"
+    onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+    style={{
+      position: "fixed",
+      right: "20px",
+      bottom: "20px",
+      zIndex: 1000,
+      border: "none",
+      borderRadius: "50%",
+      width: "42px",
+      height: "42px",
+      background: "#fc8019",
+      color: "#fff",
+      fontSize: "22px",
+      cursor: "pointer",
+      boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
+    }}
+  >
+    ↑
+  </button>
+);
+
 const Img = styled.img`
   cursor: pointer;
   display: block;
@@ -60,20 +84,26 @@ function Food_Main() {
 
   const [foodItems, setfoodItems] = useState([]);
   const [isDraweropen, setisDraweropen] = useState(false);
+  const [scrolled, setScrolled] = useState(0);
 
   useEffect(() => {
     setfoodItems(data);
   }, []);
 
-  const { x, y } = useWindowScroll();
-  const [scrolled, setScrolled] = useState(0);
-
   useEffect(() => {
-    const height =
-      document.documentElement.scrollHeight -
-      document.documentElement.clientHeight;
-    setScrolled((y / height) * 100);
-  }, [y]);
+    const updateScroll = () => {
+      const height =
+        document.documentElement.scrollHeight -
+        document.documentElement.clientHeight;
+      const currentY = window.scrollY || 0;
+      setScrolled(height > 0 ? (currentY / height) * 100 : 0);
+    };
+
+    updateScroll();
+    window.addEventListener("scroll", updateScroll);
+
+    return () => window.removeEventListener("scroll", updateScroll);
+  }, []);
 
   const sortingLinks = (e) => {
     let btns = e.currentTarget.querySelectorAll("p");
@@ -140,7 +170,7 @@ function Food_Main() {
       <div className="scroll-container">
         <div className="indicator" style={{ width: `${scrolled}%` }}></div>
       </div>{" "}
-      <ScrollToTop smooth color="#fc8019" />
+      <ScrollToTopButton />
       <Navbar />
       <Drawer
         anchor="right"

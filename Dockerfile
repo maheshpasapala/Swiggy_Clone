@@ -6,6 +6,7 @@ COPY package*.json ./
 RUN npm install --legacy-peer-deps
 
 COPY . .
+RUN test -f src/Components/RestaurantPage/Navbar.jsx
 RUN npm run build
 
 # Production stage

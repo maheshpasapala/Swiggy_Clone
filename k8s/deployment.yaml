@@ -1,20 +1,33 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: swiggy-clone
+  name: swiggy-frontend
 spec:
-  replicas: 2
+  replicas: 4
+
   selector:
     matchLabels:
-      app: swiggy-clone
+      app: swiggy-frontend
+
   template:
     metadata:
       labels:
-        app: swiggy-clone
+        app: swiggy-frontend
+
     spec:
       containers:
-        - name: swiggy-clone
-          image: swiggy_clone-app:latest
-          imagePullPolicy: Never
+        - name: swiggy-frontend
+
+          image: 051299608149.dkr.ecr.ap-south-1.amazonaws.com/swiggy-clone:latest
+
           ports:
             - containerPort: 80
+
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
